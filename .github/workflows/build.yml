@@ -20,10 +20,13 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go-version }}
-      - run: |
-          go build
+      - shell: bash
+        run: |
+          go build -o myapp
           go test
-
+          ./myapp &
+          res=$(curl localhost:3000)
+          [[ $res == 'Hello, World!' ]] 
   docker-build:
     runs-on: ubuntu-latest
     steps:
