@@ -30,8 +30,9 @@ jobs:
           docker push $DOCKER_REPOSITORY:$version
       - name: This is test
         run: |
-         echo test second steps
+         echo "test second steps"
       - name: This is test 2
         run: |
+          echo "This third steps"
           
   
