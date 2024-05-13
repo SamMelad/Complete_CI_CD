@@ -27,9 +27,19 @@ jobs:
         run: |
           version=${GITHUB_REF##*/}
           docker push $DOCKER_REPOSITORY:$version
-      - name: This is test
+          echo '\`$DOCKER_REPOSITORY:$version\`' > release
+      - name: Build Binaries
+        env: 
+          CGO_ENABLE: 0
         run: |
-         echo "test second steps"
-      - name: This is test 2
-        run: |
-          echo "This third steps"
+          GOOS=linux GOARCH=amd64 go build -o linux_amd64
+          GOOS=windows GOARCH=amd64 go build -o windows_amd64
+          GOOS=darwin GOARCH=amd64 go build -o darwin_amd64
+      - name: Release Binaries
+        uses: softprops/action-gh-release
+        with:
+          body_path: release
+          files: |
+            linux_amd64
+            windows_amd64
+            darwin_amd64
