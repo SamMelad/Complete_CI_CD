@@ -22,7 +22,7 @@ jobs:
          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: Build Docker Image
         run: 
-          version=${GITHUB_REF##*/}
+          version=${GITHUB_REF}
           docker build . -t $DOCKER_REPOSITORY:$version
       - name: Push Docker Image
         run: |
