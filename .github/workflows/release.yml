@@ -35,11 +35,11 @@ jobs:
           GOOS=linux GOARCH=amd64 go build -o linux_amd64
           GOOS=windows GOARCH=amd64 go build -o windows_amd64
           GOOS=darwin GOARCH=amd64 go build -o darwin_amd64
-      - name: Release Binaries
-        uses: softprops/action-gh-release
-        with:
-          body_path: release
-          files: |
-            linux_amd64
-            windows_amd64
-            darwin_amd64
+      # - name: Release Binaries
+      #   uses: softprops/action-gh-release
+      #   with:
+      #     body_path: release
+      #     files: |
+      #       linux_amd64
+      #       windows_amd64
+      #       darwin_amd64
