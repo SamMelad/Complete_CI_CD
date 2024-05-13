@@ -3,7 +3,6 @@ on:
     tags:
       - "**"
 
-
 name: Release
 
 jobs:
@@ -21,12 +20,12 @@ jobs:
         run: |
          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: Build Docker Image
-        run: 
-          version=${GITHUB_REF}
+        run: |
+          version=${GITHUB_REF##*/}
           docker build . -t $DOCKER_REPOSITORY:$version
       - name: Push Docker Image
         run: |
-          version=${GITHUB_REF}
+          version=${GITHUB_REF##*/}
           docker push $DOCKER_REPOSITORY:$version
       - name: This is test
         run: |
@@ -34,5 +33,3 @@ jobs:
       - name: This is test 2
         run: |
           echo "This third steps"
-          
-  
