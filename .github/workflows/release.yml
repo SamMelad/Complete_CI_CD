@@ -36,8 +36,6 @@ jobs:
           GOOS=windows GOARCH=amd64 go build -o windows_amd64
           GOOS=darwin GOARCH=amd64 go build -o darwin_amd64
       - name: Release Binaries
-        env:
-          TOKEN: ${{ secrets.TOKEN }}
         uses: softprops/action-gh-release@v1
         with:
           body_path: release
@@ -45,3 +43,5 @@ jobs:
             linux_amd64
             windows_amd64
             darwin_amd64
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
