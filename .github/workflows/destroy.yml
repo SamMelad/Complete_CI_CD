@@ -1,0 +1,28 @@
+on:
+  workflow_dispatch
+
+name: Destroy Infrastructure
+
+jobs:
+  Deploy:
+    name: Destroy
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Terraform
+        env:
+         TF_VERSION: 1.2.5
+        run: |
+          curl -LO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
+          sudo unzip -o terraform_${TF_VERSION}_linux_amd64.zip -d /usr/local/bin
+      - name: LSSS
+        run: ls -a
+      - name: Destroy Infrastructure with Terraform
+        env:
+         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+         AWS_REGION: us-east-1
+        run: |
+          cd terraform
+          terraform init
+          terraform destroy -auto-approve
