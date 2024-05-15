@@ -30,7 +30,7 @@ jobs:
 
     - name: Scan With Trivy
       run: |
-          trivy fs --security-checks vuln,secret 
+          trivy fs --security-checks vuln,secret -q
 
     - name: Scan With GOSEC
       run: |
