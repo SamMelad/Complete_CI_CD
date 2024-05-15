@@ -3,7 +3,37 @@ on: push
 name: Integration
 
 jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Security Tools
+      run: |
+          ## INSTALL TRIVY ##
+          curl -o trivy.tar.gz -L https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
+          tar -xvf trivy.tar.gz
+          sudo mv trivy /usr/local/bin
+
+          ## INSTALL GOSEC ##
+          curl -o gosec.tar.gz -L https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_linux_amd64.tar.gz
+          tar xvf gosec.tar.gz
+          sudo mv gosec /usr/local/bin
+
+          ## INSTALL TFSEC ##
+          curl -o tfsec -L https://github.com/aquasecurity/tfsec/releases/download/v${TFSEC_VERSION}/tfsec-linux-amd64
+          chmod +x tfsec
+          sudo mv tfsec /usr/local/bin
+    - name: Scan With Trivy
+      run: |
+          trivy fs --security-checks vuln,secret --exit-code 1 ./
+    - name: Scan With GOSEC
+      run: |
+          gosec ./...
+    - name: Scan With TFSEC
+      run: |
+          tfsec -m HIGH
   build:
+    needs: [scan]
     strategy:
       matrix:
         os: 
@@ -28,9 +58,19 @@ jobs:
           res=$(curl localhost:3000)
           [[ $res == 'Hello, World!' ]] 
   docker-build:
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Build Image
         run: |
-          docker build .      
+          docker build . -t cd:pipeline
+      - name: Install Trivay 
+        run: |
+          curl -o trivy.tar.gz -L https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
+          tar -xvf trivy.tar.gz
+          sudo mv trivy /usr/local/bin
+      - name: Scan With Trivay
+        run: |
+          trivy image --security-checks vuln,config,secret -s HIGH,CRITICAL --exit-code 1 cd:pipeline
+
