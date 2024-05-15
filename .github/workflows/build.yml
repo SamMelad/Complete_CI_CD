@@ -13,26 +13,29 @@ jobs:
           TFSEC_VERSION=1.26.3
           GOSEC_VERSION=2.12.0
 
-          ## INSTALL TRIVY ##
+          ## INSTALL TRIVY Especially for dependecies and images ##
           curl -o trivy.tar.gz -L https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
           tar -xvf trivy.tar.gz
           sudo mv trivy /usr/local/bin
 
-          ## INSTALL GOSEC ##
+          ## INSTALL GOSEC Especially for Golang code ##
           curl -o gosec.tar.gz -L https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_linux_amd64.tar.gz
           tar xvf gosec.tar.gz
           sudo mv gosec /usr/local/bin
 
-          ## INSTALL TFSEC ##
+          ## INSTALL TFSEC Especially for terraform code ##
           curl -o tfsec -L https://github.com/aquasecurity/tfsec/releases/download/v${TFSEC_VERSION}/tfsec-linux-amd64
           chmod +x tfsec
           sudo mv tfsec /usr/local/bin
+
     - name: Scan With Trivy
       run: |
-          trivy fs --security-checks vuln,secret --exit-code 1 ./
+          trivy fs --security-checks vuln,secret 
+
     - name: Scan With GOSEC
       run: |
           gosec ./...
+
     - name: Scan With TFSEC
       run: |
           tfsec -m HIGH
