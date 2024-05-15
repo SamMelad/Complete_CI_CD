@@ -3,6 +3,7 @@ on: push
 name: Integration
 
 jobs:
+  # To check security of code, terraform and some vuleranabilities
   scan:
     runs-on: ubuntu-latest
     steps:
@@ -39,6 +40,9 @@ jobs:
     - name: Scan With TFSEC
       run: |
           tfsec -m HIGH || true
+
+
+  # Run the code in different operating systems to check that it works good in all 
   build:
     needs: [scan]
     strategy:
@@ -64,6 +68,9 @@ jobs:
           ./myapp &
           res=$(curl localhost:3000)
           [[ $res == 'Hello, World!' ]] 
+
+
+  # After ensuring it's good and working , build docker image for it to make it portable , Then scan image if there are any security vulnerabilites
   docker-build:
     needs: [build]
     runs-on: ubuntu-latest

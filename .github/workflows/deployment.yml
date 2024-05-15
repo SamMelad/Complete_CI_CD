@@ -23,4 +23,4 @@ jobs:
         run: |
           cd terraform
           terraform init
-          terraform apply -auto-approve
+          terraform apply -auto-approve -var image=samfrancis/cd:latest

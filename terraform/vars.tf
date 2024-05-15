@@ -1,9 +1,17 @@
-variable "ami" {
-  type = string
-  default = "ami-0bb84b8ffd87024d8"
+variable "image" {
+  type        = string
+  description = "Image URI"
+  default = "v"
 }
 
-variable "instance_type" {
-  type = string
-  default = "t2.micro"
+variable "environment" {
+  type        = string
+  description = "Deployment Environment Name"
+  default = "demo"
+}
+
+variable "vpc_id" {
+  type        = string
+  description = "Deployment VPC ID"
+  default     = "vpc-0fb4ac195f51cd08d"
 }

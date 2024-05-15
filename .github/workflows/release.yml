@@ -1,3 +1,7 @@
+# This pipeline only works when you add tag during push code 
+# This push docker image to docker hub , and build binaries for our app in all operating systems
+#  to download it and setup this execuable file directly
+
 on: 
   push:
     tags:
@@ -19,15 +23,19 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
       - name: Build Docker Image
         run: |
           version=${GITHUB_REF##*/}
           docker build . -t $DOCKER_REPOSITORY:$version
+
       - name: Push Docker Image
         run: |
           version=${GITHUB_REF##*/}
           docker push $DOCKER_REPOSITORY:$version
           echo '\`docker run -p 3000:3000 $DOCKER_REPOSITORY:$version\`' > release
+
+      # This build binaries for golang application 
       - name: Build Binaries
         env: 
           CGO_ENABLE: 0
@@ -35,6 +43,8 @@ jobs:
           GOOS=linux GOARCH=amd64 go build -o linux_amd64
           GOOS=windows GOARCH=amd64 go build -o windows_amd64
           GOOS=darwin GOARCH=amd64 go build -o darwin_amd64
+
+      #  Push binary files to github repository in releases
       - name: Release Binaries
         uses: softprops/action-gh-release@v1
         with:
