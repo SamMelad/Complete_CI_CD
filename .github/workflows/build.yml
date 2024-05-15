@@ -9,6 +9,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install Security Tools
       run: |
+          TRIVY_VERSION=0.30.4
+          TFSEC_VERSION=1.26.3
+          GOSEC_VERSION=2.12.0
+
           ## INSTALL TRIVY ##
           curl -o trivy.tar.gz -L https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
           tar -xvf trivy.tar.gz
@@ -67,6 +71,8 @@ jobs:
           docker build . -t cd:pipeline
       - name: Install Trivay 
         run: |
+          TRIVY_VERSION=0.30.4
+
           curl -o trivy.tar.gz -L https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
           tar -xvf trivy.tar.gz
           sudo mv trivy /usr/local/bin
